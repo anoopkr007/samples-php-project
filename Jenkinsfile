@@ -17,14 +17,12 @@ pipeline {
         sh '/bin/phpunit ${WORKSPACE}/src'
       }
     }
-
-// added on May 05 Sunday
     stage("Create new tag") {
          when {
                expression {env.BRANCH_NAME == 'master'}
             }                     
             steps {
-             sshagent (credentials: ['test-git-tag'])                        
+             //sshagent (credentials: ['test-git-tag'])                        
                 {
                 script {
                    
@@ -42,10 +40,10 @@ pipeline {
                         """
                     
                 }
-              }
+             }
                 
             }
-        }
+    }
   
   }
 }
