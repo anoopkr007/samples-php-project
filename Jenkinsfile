@@ -11,21 +11,16 @@ pipeline {
   }
 
   stages {
-    stage('PHPUnit Test') {
-      steps {
-        echo 'Running PHPUnit...'
-        sh '/bin/phpunit ${WORKSPACE}/src'
-      }
-    }
-    stage("Create new tag") {
+  stage("Create new tag") {
          when {
                expression {env.BRANCH_NAME == 'master'}
             }                     
             steps {
-             //sshagent (credentials: ['test-git-tag'])                        
+             sshagent (credentials: ['1217be31-0ecd-4559-af39-923100caaecf'])                        
                 {
                 script {
-                   
+                        sh "git config --add remote.origin.fetch +refs/heads/master:refs/remotes/origin/master"
+                        sh "git fetch" 
                         def tag = sh(returnStdout: true, script: "git tag | tail -1").trim()
                         println tag
                         def semVerLib = load 'SemVer.groovy'
@@ -40,13 +35,9 @@ pipeline {
                         """
                     
                 }
-             }
+              }
                 
             }
-    }
-  
+        } 
   }
 }
-
-
-
